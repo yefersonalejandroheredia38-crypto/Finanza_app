@@ -4,30 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FinanzApp · El juego del emprendedor</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <!-- Estilos CSS -->
     <link rel="stylesheet" href="styles.css">
-    <!-- Manifest PWA (opcional) -->
     <link rel="manifest" href="manifest.json">
-    <!-- Icono para móvil (por defecto) -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
 </head>
 <body>
     <div class="app-container">
-        <!-- Pantalla de inicio / Menú principal -->
+        <!-- Pantalla de menú -->
         <section id="menu-screen" class="screen active">
             <div class="menu-content">
                 <h1 class="game-title">Finanz<span>App</span></h1>
-                <p class="subtitle">El juego del emprendedor</p>
+                <p class="subtitle">Aprende finanzas desde cero</p>
                 <div class="menu-buttons">
                     <button class="menu-btn play-btn" id="btn-play"><i class="fas fa-play"></i> Jugar</button>
                     <button class="menu-btn tips-btn" id="btn-tips"><i class="fas fa-lightbulb"></i> Consejos</button>
                     <button class="menu-btn settings-btn" id="btn-settings"><i class="fas fa-cog"></i> Ajustes</button>
                 </div>
-                <div class="footer-note">Aprende finanzas jugando</div>
+                <div class="footer-note">Creado desde un móvil · El que quiere, puede</div>
             </div>
         </section>
 
@@ -36,23 +31,29 @@
             <header class="screen-header">
                 <button class="back-btn" id="back-from-map"><i class="fas fa-arrow-left"></i></button>
                 <h2>Mapa de niveles</h2>
-                <div class="header-spacer"></div>
+                <button class="calc-btn" id="open-calc"><i class="fas fa-calculator"></i></button>
             </header>
+            <!-- Barra de progreso global -->
+            <div class="global-progress">
+                <div class="progress-text">Progreso general <span id="progress-percent">0%</span></div>
+                <div class="progress-bar-bg">
+                    <div class="progress-bar-fill" id="global-progress-bar" style="width:0%"></div>
+                </div>
+            </div>
             <div class="level-map">
-                <!-- Los niveles se generarán con JS -->
                 <div class="map-container" id="level-map-container"></div>
             </div>
         </section>
 
-        <!-- Pantalla de juego (nivel) -->
+        <!-- Pantalla de juego -->
         <section id="game-screen" class="screen">
             <header class="screen-header">
                 <button class="back-btn" id="back-from-game"><i class="fas fa-arrow-left"></i></button>
                 <h2 id="level-title">Nivel 1</h2>
-                <div class="header-spacer"></div>
+                <button class="calc-btn" id="open-calc-game"><i class="fas fa-calculator"></i></button>
             </header>
             <div class="game-content">
-                <div class="level-description" id="level-description">Aquí va la descripción</div>
+                <div class="level-description" id="level-description"></div>
                 <div class="question-box" id="question-box"></div>
                 <div class="answer-area" id="answer-area"></div>
                 <button class="submit-btn" id="submit-answer">Comprobar <i class="fas fa-check"></i></button>
@@ -65,7 +66,7 @@
             <header class="screen-header">
                 <button class="back-btn" id="back-from-tips"><i class="fas fa-arrow-left"></i></button>
                 <h2>Consejos financieros</h2>
-                <div class="header-spacer"></div>
+                <div></div>
             </header>
             <div class="tips-content">
                 <div class="tip-card" id="tip-display">
@@ -81,7 +82,7 @@
             <header class="screen-header">
                 <button class="back-btn" id="back-from-settings"><i class="fas fa-arrow-left"></i></button>
                 <h2>Ajustes</h2>
-                <div class="header-spacer"></div>
+                <div></div>
             </header>
             <div class="settings-content">
                 <div class="setting-item">
@@ -105,16 +106,53 @@
             </div>
         </section>
 
-        <!-- Modal para mensajes rápidos (ej. nivel completado) -->
+        <!-- Modal de nivel completado (con confeti) -->
         <div id="modal" class="modal">
             <div class="modal-content">
                 <p id="modal-message">¡Nivel superado!</p>
                 <button id="modal-close">Continuar</button>
             </div>
         </div>
+
+        <!-- Modal calculadora -->
+        <div id="calc-modal" class="calc-modal">
+            <div class="calc-content">
+                <div class="calc-header">
+                    <span>Calculadora</span>
+                    <button class="close-calc" id="close-calc"><i class="fas fa-times"></i></button>
+                </div>
+                <div class="calc-display" id="calc-display">0</div>
+                <div class="calc-buttons">
+                    <button class="calc-btn-key" data-value="7">7</button>
+                    <button class="calc-btn-key" data-value="8">8</button>
+                    <button class="calc-btn-key" data-value="9">9</button>
+                    <button class="calc-btn-key operator" data-value="/">÷</button>
+                    
+                    <button class="calc-btn-key" data-value="4">4</button>
+                    <button class="calc-btn-key" data-value="5">5</button>
+                    <button class="calc-btn-key" data-value="6">6</button>
+                    <button class="calc-btn-key operator" data-value="*">×</button>
+                    
+                    <button class="calc-btn-key" data-value="1">1</button>
+                    <button class="calc-btn-key" data-value="2">2</button>
+                    <button class="calc-btn-key" data-value="3">3</button>
+                    <button class="calc-btn-key operator" data-value="-">−</button>
+                    
+                    <button class="calc-btn-key" data-value="0">0</button>
+                    <button class="calc-btn-key" data-value=".">.</button>
+                    <button class="calc-btn-key" id="calc-equals">=</button>
+                    <button class="calc-btn-key operator" data-value="+">+</button>
+                    
+                    <button class="calc-btn-key clear" id="calc-clear">C</button>
+                    <button class="calc-btn-key backspace" id="calc-backspace"><i class="fas fa-backspace"></i></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Canvas para partículas (confeti) -->
+        <canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></canvas>
     </div>
 
-    <!-- Script principal -->
     <script src="script.js"></script>
 </body>
 </html>
