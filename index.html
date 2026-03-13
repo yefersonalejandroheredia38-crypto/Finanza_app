@@ -11,13 +11,13 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <!-- Estilos CSS -->
     <link rel="stylesheet" href="styles.css">
-    <!-- Manifest PWA (opcional) -->
+    <!-- Manifest PWA -->
     <link rel="manifest" href="manifest.json">
-    <!-- Icono por defecto -->
+    <!-- Icono -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
 </head>
 <body>
-    <div class="app-container">
+    <div class="app-container" id="appContainer">
         <!-- Pantalla de menú principal -->
         <section id="menu-screen" class="screen active">
             <div class="menu-content">
@@ -28,8 +28,9 @@
                     <button class="menu-btn tips-btn" id="btn-tips"><i class="fas fa-lightbulb"></i> Consejos</button>
                     <button class="menu-btn settings-btn" id="btn-settings"><i class="fas fa-cog"></i> Ajustes</button>
                     <button class="menu-btn simulator-menu-btn" id="btn-simulator"><i class="fas fa-chart-line"></i> Simulador</button>
+                    <button class="menu-btn diary-btn" id="btn-diary"><i class="fas fa-book"></i> Diario</button>
                 </div>
-                <div class="footer-note">Creado desde un móvil · El que quiere, puede</div>
+                <div class="footer-note" id="userGreeting">Hola, emprendedor</div>
             </div>
         </section>
 
@@ -46,6 +47,10 @@
                 <div class="progress-bar-bg">
                     <div class="progress-bar-fill" id="global-progress-bar" style="width:0%"></div>
                 </div>
+            </div>
+            <!-- Logros destacados -->
+            <div class="achievements-bar" id="achievementsBar">
+                <i class="fas fa-medal"></i> <span id="achievementCount">0</span> logros
             </div>
             <div class="level-map">
                 <div class="map-container" id="level-map-container"></div>
@@ -65,6 +70,30 @@
                 <div class="answer-area" id="answer-area"></div>
                 <button class="submit-btn" id="submit-answer">Comprobar <i class="fas fa-check"></i></button>
                 <div class="feedback" id="feedback"></div>
+            </div>
+        </section>
+
+        <!-- Pantalla de enseñanza (entre niveles) -->
+        <section id="teaching-screen" class="screen">
+            <header class="screen-header">
+                <button class="back-btn" id="back-from-teaching"><i class="fas fa-arrow-left"></i></button>
+                <h2>Aprendamos juntos</h2>
+                <div></div>
+            </header>
+            <div class="teaching-content">
+                <div class="teaching-card" id="teachingCard">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    <h3 id="teachingTitle">Lección especial</h3>
+                    <p id="teachingText">Cargando...</p>
+                    <div class="teaching-quote" id="teachingQuote"></div>
+                </div>
+                <div class="verification-form" id="verificationForm">
+                    <h4>Verifica lo aprendido</h4>
+                    <p id="verificationQuestion"></p>
+                    <div id="verificationOptions"></div>
+                    <button class="verify-btn" id="submitVerification">Responder</button>
+                </div>
+                <button class="continue-btn" id="continueAfterTeaching">Continuar</button>
             </div>
         </section>
 
@@ -93,6 +122,17 @@
             </header>
             <div class="settings-content">
                 <div class="setting-item">
+                    <span><i class="fas fa-user"></i> Nombre del negocio</span>
+                    <input type="text" id="businessName" placeholder="Mi negocio" maxlength="20">
+                </div>
+                <div class="setting-item">
+                    <span><i class="fas fa-palette"></i> Tema</span>
+                    <label class="switch">
+                        <input type="checkbox" id="theme-toggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+                <div class="setting-item">
                     <span><i class="fas fa-volume-up"></i> Sonido</span>
                     <label class="switch">
                         <input type="checkbox" id="sound-toggle" checked>
@@ -107,6 +147,12 @@
                     </label>
                 </div>
                 <div class="setting-item">
+                    <span><i class="fas fa-bell"></i> Recordatorio diario</span>
+                    <label class="switch">
+                        <input type="checkbox" id="reminder-toggle">
+                    </label>
+                </div>
+                <div class="setting-item">
                     <span><i class="fas fa-redo-alt"></i> Reiniciar progreso</span>
                     <button class="reset-btn" id="reset-progress">Reiniciar</button>
                 </div>
@@ -118,7 +164,7 @@
             <header class="screen-header">
                 <button class="back-btn" id="back-from-simulator"><i class="fas fa-arrow-left"></i></button>
                 <h2>Simulador de negocio</h2>
-                <div class="header-spacer"></div>
+                <button class="export-btn" id="exportSimPDF"><i class="fas fa-file-pdf"></i></button>
             </header>
             <div class="simulator-content">
                 <div class="simulator-card">
@@ -171,11 +217,80 @@
             </div>
         </section>
 
-        <!-- Modal de nivel completado (con confeti) -->
+        <!-- Pantalla de Diario de Negocios -->
+        <section id="diary-screen" class="screen">
+            <header class="screen-header">
+                <button class="back-btn" id="back-from-diary"><i class="fas fa-arrow-left"></i></button>
+                <h2>Diario de negocios</h2>
+                <button class="export-btn" id="exportDiaryPDF"><i class="fas fa-file-pdf"></i></button>
+            </header>
+            <div class="diary-content">
+                <div class="diary-entry-form">
+                    <h3>Registrar venta/gasto</h3>
+                    <div class="diary-row">
+                        <label>Tipo:</label>
+                        <select id="diary-type">
+                            <option value="income">Venta (ingreso)</option>
+                            <option value="expense">Gasto (egreso)</option>
+                        </select>
+                    </div>
+                    <div class="diary-row">
+                        <label>Descripción:</label>
+                        <input type="text" id="diary-desc" placeholder="Ej: Venta de arepas">
+                    </div>
+                    <div class="diary-row">
+                        <label>Monto ($):</label>
+                        <input type="number" id="diary-amount" placeholder="0">
+                    </div>
+                    <button class="diary-btn" id="addDiaryEntry">Registrar</button>
+                </div>
+
+                <div class="diary-summary">
+                    <h3>Resumen del mes</h3>
+                    <div class="summary-item">
+                        <span>Total ingresos:</span>
+                        <span id="diary-total-income">$0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Total gastos:</span>
+                        <span id="diary-total-expense">$0</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Ganancia neta:</span>
+                        <span id="diary-net-profit">$0</span>
+                    </div>
+                </div>
+
+                <div class="diary-list">
+                    <h3>Últimos registros</h3>
+                    <div id="diary-entries-list"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pantalla de Logros -->
+        <section id="achievements-screen" class="screen">
+            <header class="screen-header">
+                <button class="back-btn" id="back-from-achievements"><i class="fas fa-arrow-left"></i></button>
+                <h2>Logros</h2>
+                <div></div>
+            </header>
+            <div class="achievements-content" id="achievementsList"></div>
+        </section>
+
+        <!-- Modal de nivel completado -->
         <div id="modal" class="modal">
             <div class="modal-content">
                 <p id="modal-message">¡Nivel superado!</p>
                 <button id="modal-close">Continuar</button>
+            </div>
+        </div>
+
+        <!-- Modal de logro desbloqueado -->
+        <div id="achievement-modal" class="achievement-modal">
+            <div class="achievement-modal-content">
+                <i class="fas fa-trophy"></i>
+                <p id="achievement-modal-text">¡Logro desbloqueado!</p>
             </div>
         </div>
 
@@ -218,6 +333,8 @@
         <canvas id="confetti-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:9999; display:none;"></canvas>
     </div>
 
+    <!-- jsPDF para exportar PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
