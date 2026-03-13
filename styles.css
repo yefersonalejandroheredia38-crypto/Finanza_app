@@ -11,7 +11,7 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    touch-action: manipulation; /* Evita zoom accidental en móviles */
+    touch-action: manipulation;
 }
 
 .app-container {
@@ -37,15 +37,31 @@ body {
     display: none;
     flex-direction: column;
     overflow-y: auto;
-    transition: transform 0.3s ease;
+    transition: transform 0.4s ease, opacity 0.4s ease;
     color: white;
+    opacity: 0;
+    transform: translateX(20px);
 }
 
 .screen.active {
     display: flex;
+    opacity: 1;
+    transform: translateX(0);
 }
 
-/* Pantalla de menú */
+/* Transiciones entre pantallas */
+.screen.exit-left {
+    transform: translateX(-100%);
+    opacity: 0;
+}
+.screen.enter-right {
+    transform: translateX(100%);
+}
+.screen.enter-left {
+    transform: translateX(-100%);
+}
+
+/* Menú principal */
 #menu-screen {
     background: radial-gradient(circle at top left, #2a3f5e, #0d1a2b);
     justify-content: center;
@@ -127,7 +143,7 @@ body {
     align-items: center;
     padding: 10px 0 20px;
 }
-.back-btn {
+.back-btn, .calc-btn {
     background: none;
     border: none;
     color: white;
@@ -141,7 +157,7 @@ body {
     justify-content: center;
     cursor: pointer;
 }
-.back-btn:active {
+.back-btn:active, .calc-btn:active {
     background: rgba(255,255,255,0.3);
 }
 .screen-header h2 {
@@ -149,8 +165,29 @@ body {
     font-weight: 600;
     text-shadow: 0 2px 5px black;
 }
-.header-spacer {
-    width: 40px;
+
+/* Barra de progreso global */
+.global-progress {
+    margin: 10px 0 20px;
+    text-align: center;
+}
+.progress-text {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+.progress-bar-bg {
+    width: 100%;
+    height: 20px;
+    background: rgba(255,255,255,0.2);
+    border-radius: 30px;
+    overflow: hidden;
+}
+.progress-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #4caf50, #8bc34a);
+    width: 0%;
+    border-radius: 30px;
+    transition: width 0.3s ease;
 }
 
 /* Mapa de niveles */
@@ -158,14 +195,14 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    justify-content: flex-start;
 }
 .map-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 15px;
-    padding: 20px 0;
+    padding: 10px 0 20px;
 }
 .level-node {
     display: flex;
@@ -288,6 +325,49 @@ body {
 }
 .option-btn:active {
     transform: scale(0.95);
+}
+/* Estilo para pregunta de arrastrar (simulado) */
+.drag-zone {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+    margin: 20px 0;
+}
+.drag-item {
+    background: #ffb347;
+    color: #1e2b3c;
+    padding: 15px 25px;
+    border-radius: 40px;
+    font-weight: bold;
+    font-size: 1.3rem;
+    cursor: grab;
+    user-select: none;
+    box-shadow: 0 5px 0 #b15d00;
+    transition: 0.1s;
+}
+.drag-item:active {
+    transform: translateY(5px);
+    box-shadow: none;
+}
+.drop-zone {
+    background: rgba(255,255,255,0.2);
+    border: 2px dashed #ffb347;
+    min-height: 80px;
+    border-radius: 40px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    margin: 10px 0;
+}
+.drop-zone .drag-item {
+    cursor: default;
+    background: #4caf50;
+    box-shadow: none;
+    transform: none;
 }
 .submit-btn {
     background: linear-gradient(45deg, #4caf50, #45a049);
@@ -431,7 +511,7 @@ input:checked + .slider:before {
     font-weight: 600;
 }
 
-/* Modal */
+/* Modal de nivel completado */
 .modal {
     display: none;
     position: absolute;
@@ -451,6 +531,11 @@ input:checked + .slider:before {
     text-align: center;
     max-width: 300px;
     border: 3px solid #ffb347;
+    animation: pop 0.3s ease;
+}
+@keyframes pop {
+    0% { transform: scale(0.5); opacity: 0; }
+    100% { transform: scale(1); opacity: 1; }
 }
 .modal-content p {
     font-size: 1.8rem;
@@ -465,4 +550,87 @@ input:checked + .slider:before {
     font-size: 1.2rem;
     font-weight: bold;
     cursor: pointer;
+}
+
+/* Calculadora modal */
+.calc-modal {
+    display: none;
+    position: absolute;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.9);
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+}
+.calc-modal.show {
+    display: flex;
+}
+.calc-content {
+    background: #2a3f5e;
+    width: 90%;
+    max-width: 350px;
+    border-radius: 40px;
+    padding: 20px;
+    box-shadow: 0 20px 40px black;
+    border: 2px solid #ffb347;
+}
+.calc-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    color: white;
+    font-size: 1.4rem;
+    font-weight: 600;
+}
+.close-calc {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.8rem;
+    cursor: pointer;
+}
+.calc-display {
+    background: #0f1a2b;
+    color: white;
+    font-size: 2.5rem;
+    text-align: right;
+    padding: 15px;
+    border-radius: 30px;
+    margin-bottom: 20px;
+    border: 2px solid #ffb347;
+    overflow-x: auto;
+}
+.calc-buttons {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+}
+.calc-btn-key {
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    color: white;
+    font-size: 1.8rem;
+    padding: 18px 0;
+    border-radius: 30px;
+    cursor: pointer;
+    transition: 0.1s;
+}
+.calc-btn-key:active {
+    background: #ffb347;
+    color: #0f1a2b;
+}
+.calc-btn-key.operator {
+    background: #ffb347;
+    color: #0f1a2b;
+}
+.calc-btn-key.clear {
+    background: #f44336;
+}
+.calc-btn-key.backspace {
+    background: #9e9e9e;
+}
+#calc-equals {
+    background: #4caf50;
+    grid-column: span 2;
 }
