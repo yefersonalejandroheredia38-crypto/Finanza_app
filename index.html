@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>FinanzApp · El juego del emprendedor</title>
+    <!-- Fuentes e iconos -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Chart.js para gráficos -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Estilos CSS -->
     <link rel="stylesheet" href="styles.css">
+    <!-- Manifest PWA (opcional) -->
     <link rel="manifest" href="manifest.json">
+    <!-- Icono por defecto -->
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>💰</text></svg>">
 </head>
 <body>
     <div class="app-container">
-        <!-- Pantalla de menú -->
+        <!-- Pantalla de menú principal -->
         <section id="menu-screen" class="screen active">
             <div class="menu-content">
                 <h1 class="game-title">Finanz<span>App</span></h1>
@@ -21,6 +27,7 @@
                     <button class="menu-btn play-btn" id="btn-play"><i class="fas fa-play"></i> Jugar</button>
                     <button class="menu-btn tips-btn" id="btn-tips"><i class="fas fa-lightbulb"></i> Consejos</button>
                     <button class="menu-btn settings-btn" id="btn-settings"><i class="fas fa-cog"></i> Ajustes</button>
+                    <button class="menu-btn simulator-menu-btn" id="btn-simulator"><i class="fas fa-chart-line"></i> Simulador</button>
                 </div>
                 <div class="footer-note">Creado desde un móvil · El que quiere, puede</div>
             </div>
@@ -45,7 +52,7 @@
             </div>
         </section>
 
-        <!-- Pantalla de juego -->
+        <!-- Pantalla de juego (nivel activo) -->
         <section id="game-screen" class="screen">
             <header class="screen-header">
                 <button class="back-btn" id="back-from-game"><i class="fas fa-arrow-left"></i></button>
@@ -102,6 +109,64 @@
                 <div class="setting-item">
                     <span><i class="fas fa-redo-alt"></i> Reiniciar progreso</span>
                     <button class="reset-btn" id="reset-progress">Reiniciar</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Pantalla de Simulador de Negocio -->
+        <section id="simulator-screen" class="screen">
+            <header class="screen-header">
+                <button class="back-btn" id="back-from-simulator"><i class="fas fa-arrow-left"></i></button>
+                <h2>Simulador de negocio</h2>
+                <div class="header-spacer"></div>
+            </header>
+            <div class="simulator-content">
+                <div class="simulator-card">
+                    <h3>Configura tu negocio</h3>
+                    <div class="simulator-row">
+                        <label>Precio de venta unitario ($):</label>
+                        <input type="number" id="sim-price" value="1000" step="100">
+                    </div>
+                    <div class="simulator-row">
+                        <label>Costo variable unitario ($):</label>
+                        <input type="number" id="sim-var-cost" value="400" step="50">
+                    </div>
+                    <div class="simulator-row">
+                        <label>Costos fijos mensuales ($):</label>
+                        <input type="number" id="sim-fixed-cost" value="70000" step="1000">
+                    </div>
+                    <div class="simulator-row">
+                        <label>Unidades vendidas al mes:</label>
+                        <input type="number" id="sim-units" value="500" step="10">
+                    </div>
+                    <button class="simulator-btn" id="sim-calculate">Calcular</button>
+                </div>
+
+                <div class="simulator-results">
+                    <div class="result-item">
+                        <span>Ingresos totales:</span>
+                        <span id="sim-revenue">$500,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Costos variables:</span>
+                        <span id="sim-var-total">$200,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Costos fijos:</span>
+                        <span id="sim-fixed-total">$70,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Ganancia neta:</span>
+                        <span id="sim-profit">$230,000</span>
+                    </div>
+                    <div class="result-item">
+                        <span>Punto de equilibrio (uds):</span>
+                        <span id="sim-breakeven">117</span>
+                    </div>
+                </div>
+
+                <div class="simulator-chart">
+                    <canvas id="simChart" width="400" height="200"></canvas>
                 </div>
             </div>
         </section>
