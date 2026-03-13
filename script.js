@@ -1,9 +1,8 @@
 // ============================================
-// FinanzApp - Versión Mejorada
-// Incluye: niveles básicos, múltiple, drag, calculadora, progreso, confeti, animaciones
+// FinanzApp - VERSIÓN EMPRENDEDOR COMPLETA
+// 11 niveles, simulador, gráficos, confeti, calculadora
 // ============================================
 
-// --- Variables globales ---
 let currentScreen = 'menu';
 let currentLevel = 1;
 let levelsUnlocked = 1;
@@ -11,43 +10,132 @@ let levelsCompleted = JSON.parse(localStorage.getItem('finanzapp_completed')) ||
 let soundEnabled = localStorage.getItem('finanzapp_sound') !== 'false';
 let vibrationEnabled = localStorage.getItem('finanzapp_vibration') !== 'false';
 
-// Variables para drag & drop (simulado)
-let dragSelectedItem = null;
-let dragItems = [];
-
-// Datos de niveles (desde lo más básico)
+// NIVELES COMPLETOS (11)
 const levels = [
-    // NIVELES BÁSICOS (aprender a sumar/restar)
-    { id: 1, title: 'Suma simple', desc: 'Si vendes 5 limonadas a $10 cada una, ¿cuánto dinero ingresas?', 
-      type: 'input', correct: 50, hint: 'Multiplica 5 × 10' },
-    { id: 2, title: 'Resta simple', desc: 'Compraste limones por $20 y azúcar por $15. ¿Cuánto gastaste en total?', 
-      type: 'input', correct: 35, hint: 'Suma 20 + 15' },
-    { id: 3, title: 'Concepto de ganancia', desc: 'Ingresos: $100, Gastos: $70. ¿Cuál es la ganancia?', 
-      type: 'input', correct: 30, hint: 'Ingresos - Gastos' },
-    // NIVEL CON OPCIONES MÚLTIPLES
-    { id: 4, title: '¿Qué es un gasto fijo?', desc: 'Selecciona cuál de estos es un gasto fijo en un negocio.', 
-      type: 'multiple', options: ['Compra de mercancía', 'Pago de alquiler', 'Comisión por venta', 'Publicidad variable'], 
-      correct: 1, hint: 'Es el que pagas cada mes, sin importar las ventas.' }, // índice 1 (alquiler)
-    // NIVEL CON ARRASTRAR (simulado con botones)
-    { id: 5, title: 'Ordena los pasos', desc: 'Arrastra los pasos en orden correcto para calcular la ganancia:', 
-      type: 'drag', items: ['Calcular ingresos', 'Calcular gastos', 'Restar gastos de ingresos'], 
-      correctOrder: [0,1,2], hint: 'Primero ingresos, luego gastos, después resta.' },
-    // NIVEL AVANZADO (punto de equilibrio)
-    { id: 6, title: 'Punto de equilibrio', desc: 'Costos fijos: $500, precio venta: $20, costo variable: $5. ¿Cuántas unidades necesitas vender para no perder?', 
-      type: 'input', correct: 34, hint: '500 / (20-5) = 33.33, redondea a 34' },
-    // Puedes agregar más
+    { 
+        id: 1, 
+        title: 'Costo de producción', 
+        desc: 'Vas a hacer arepas de queso para vender. Compras: 1 kg de harina ($2.000), 1/2 kg de queso ($3.500) y pagas $500 de gas. ¿Cuál es el costo total de producción?', 
+        type: 'input', 
+        correct: 6000, 
+        hint: 'Suma todo: 2000 + 3500 + 500',
+        explanation: 'El costo de producción es todo lo que gastas para hacer el producto.'
+    },
+    { 
+        id: 2, 
+        title: 'Precio de venta', 
+        desc: 'Con esa misma receta hiciste 10 arepas. El costo total fue $6.000. Quieres ganar el 40% sobre el costo. ¿A qué precio debes vender cada arepa? (Respuesta en pesos, sin decimales)', 
+        type: 'input', 
+        correct: 840, 
+        hint: 'Primero calcula: 6000 × 0.40 = 2400 de ganancia total. Luego suma: 6000 + 2400 = 8400 total venta. Divide entre 10 arepas = 840 por arepa.',
+        explanation: 'Precio = (costo total + ganancia deseada) / unidades'
+    },
+    { 
+        id: 3, 
+        title: 'Ganancia por unidad', 
+        desc: 'Vendes cada arepa a $1.000. Sabemos que el costo de producir cada arepa es $600 (porque 6000/10). ¿Cuánto ganas por cada arepa vendida?', 
+        type: 'input', 
+        correct: 400, 
+        hint: 'Precio venta - costo por unidad = 1000 - 600',
+        explanation: 'La ganancia unitaria es lo que realmente te queda por cada venta.'
+    },
+    { 
+        id: 4, 
+        title: 'Gastos fijos y variables', 
+        desc: 'De estos gastos, ¿cuál es FIJO (pagas sí o sí cada mes)?', 
+        type: 'multiple', 
+        options: [
+            'Compra de harina (depende de las ventas)', 
+            'Alquiler del local', 
+            'Comisión al vendedor', 
+            'Bolsas para empacar'
+        ], 
+        correct: 1, // índice 1 (alquiler)
+        hint: 'El fijo no cambia aunque vendas poco.',
+        explanation: 'Los gastos fijos como alquiler, servicios, sueldos base, se pagan incluso sin ventas.'
+    },
+    { 
+        id: 5, 
+        title: 'Punto de equilibrio', 
+        desc: 'Tienes un negocio de arepas. Costos fijos mensuales: alquiler $50.000, servicios $20.000. Cada arepa la vendes a $1.000 y su costo variable (ingredientes) es $400. ¿Cuántas arepas debes vender al mes para no perder ni ganar? (Punto de equilibrio en unidades)', 
+        type: 'input', 
+        correct: 117, 
+        hint: 'Fijos totales = 70.000. Ganancia por arepa = 1000-400=600. Unidades = 70000/600 = 116.66 → redondea a 117',
+        explanation: 'Punto equilibrio = costos fijos / (precio - costo variable)'
+    },
+    { 
+        id: 6, 
+        title: 'Flujo de caja simple', 
+        desc: 'En un día vendiste 30 arepas a $1.000 cada una. Gastaste $12.000 en ingredientes y pagaste $5.000 de transporte. ¿Cuánto dinero te queda en caja al final del día?', 
+        type: 'input', 
+        correct: 13000, 
+        hint: 'Ingresos: 30×1000 = 30000. Gastos: 12000+5000=17000. Resta: 30000-17000',
+        explanation: 'Flujo de caja = ingresos del día - gastos del día'
+    },
+    { 
+        id: 7, 
+        title: 'Separar finanzas', 
+        desc: 'Tu negocio tiene $50.000 en caja. Necesitas comprar comida para tu casa por $15.000. ¿Qué debes hacer como buen emprendedor?', 
+        type: 'multiple', 
+        options: [
+            'Tomar los $15.000 de la caja del negocio, total es mi dinero',
+            'Pagar con tu dinero personal, NO mezclar',
+            'Prestarle al negocio y luego devolver',
+            'Esperar a vender más'
+        ], 
+        correct: 1, // índice 1
+        hint: 'Nunca mezcles dinero personal con el del negocio.',
+        explanation: 'Siempre separa: el dinero del negocio es para el negocio. Tú te pagas un sueldo o retiras ganancias.'
+    },
+    { 
+        id: 8, 
+        title: 'Presupuesto mensual', 
+        desc: 'Proyectas vender 500 arepas al mes a $1.000 c/u. Tus costos variables son $400 por arepa y los fijos $70.000. ¿Cuál será tu ganancia neta del mes?', 
+        type: 'input', 
+        correct: 230000, 
+        hint: 'Ingresos: 500×1000=500.000. Costos variables: 500×400=200.000. Fijos: 70.000. Ganancia = 500.000 - 200.000 - 70.000',
+        explanation: 'Ganancia neta = ingresos - costos variables - costos fijos'
+    },
+    { 
+        id: 9, 
+        title: 'Impuestos básicos', 
+        desc: 'Vendiste arepas por $500.000 en el mes. El impuesto a las ventas (IVA) es del 19%. ¿Cuánto debes pagar de IVA? (Responde en pesos, sin decimales)', 
+        type: 'input', 
+        correct: 95000, 
+        hint: '500.000 × 0.19 = 95.000',
+        explanation: 'El IVA se calcula como un porcentaje de tus ventas. Debes separarlo para pagarlo.'
+    },
+    { 
+        id: 10, 
+        title: 'Registro de ventas diarias', 
+        desc: 'Llevas un registro de ventas: Lunes $80.000, Martes $95.000, Miércoles $110.000. ¿Cuál es el promedio de ventas por día?', 
+        type: 'input', 
+        correct: 95000, 
+        hint: 'Suma: 80000+95000+110000=285000. Divide entre 3: 95000',
+        explanation: 'Llevar un registro te ayuda a proyectar y tomar decisiones.'
+    },
+    { 
+        id: 11, 
+        title: 'Préstamo e intereses', 
+        desc: 'Pides un préstamo de $1.000.000 al banco con un interés mensual del 2%. Si lo pagas en un mes, ¿cuánto pagarás en total?', 
+        type: 'input', 
+        correct: 1020000, 
+        hint: 'Interés = 1.000.000 × 0.02 = 20.000. Total = 1.000.000 + 20.000',
+        explanation: 'Los intereses son el costo del dinero prestado.'
+    }
 ];
 
 // Consejos financieros
 const tips = [
-    "Separa siempre tus gastos personales de los del negocio.",
-    "Ahorra al menos el 10% de tus ganancias para imprevistos.",
-    "Reinvierte una parte de tus utilidades para crecer.",
-    "Lleva un registro diario de ingresos y gastos.",
-    "Calcula tu punto de equilibrio antes de lanzar un producto.",
-    "No mezcles las deudas del negocio con las personales.",
-    "Controla tu flujo de caja semanalmente.",
-    "El ahorro es la base de la inversión."
+    "Siempre separa el dinero del negocio de tu dinero personal.",
+    "Págate un sueldo fijo, no saques dinero del negocio a cada rato.",
+    "Registra todos los gastos, por pequeños que sean.",
+    "Antes de poner precio, calcula todos tus costos.",
+    "Ten un fondo de emergencia para el negocio.",
+    "No confundas ganancia con liquidez.",
+    "Reinvierte una parte de tus ganancias para crecer.",
+    "El IVA no es tuyo, es del Estado. Sepáralo.",
+    "Un préstamo puede ayudarte a crecer, pero cuidado con los intereses."
 ];
 let currentTipIndex = 0;
 
@@ -57,7 +145,8 @@ const screens = {
     map: document.getElementById('map-screen'),
     game: document.getElementById('game-screen'),
     tips: document.getElementById('tips-screen'),
-    settings: document.getElementById('settings-screen')
+    settings: document.getElementById('settings-screen'),
+    simulator: document.getElementById('simulator-screen')
 };
 
 // --- Funciones de sonido y vibración ---
@@ -120,13 +209,13 @@ function showScreen(screenId) {
     
     currentScreen = screenId;
     
-    // Actualizar contenido según pantalla
     if (screenId === 'map') {
         renderMap();
         updateGlobalProgress();
     }
     if (screenId === 'tips') showTip();
     if (screenId === 'settings') loadSettingsUI();
+    if (screenId === 'simulator') initSimulator();
 }
 
 // --- Barra de progreso global ---
@@ -176,10 +265,10 @@ function startLevel(levelId) {
     
     document.getElementById('level-title').innerText = `Nivel ${level.id}: ${level.title}`;
     document.getElementById('level-description').innerText = level.desc;
-    document.getElementById('question-box').innerText = '¿Cuál es la respuesta?';
+    document.getElementById('question-box').innerHTML = `<i class="fas fa-lightbulb" style="color:#ffb347;"></i> ${level.explanation || 'Resuelve el problema'}`;
     
     const answerArea = document.getElementById('answer-area');
-    answerArea.innerHTML = ''; // limpiar
+    answerArea.innerHTML = '';
     
     if (level.type === 'input') {
         answerArea.innerHTML = `<input type="number" id="answer-input" placeholder="Escribe tu respuesta..." step="any">`;
@@ -191,79 +280,19 @@ function startLevel(levelId) {
         html += '</div>';
         answerArea.innerHTML = html;
         
-        // Añadir evento a opciones
         document.querySelectorAll('.option-btn').forEach(btn => {
             btn.addEventListener('click', function(e) {
                 document.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
                 this.classList.add('selected');
             });
         });
-    } else if (level.type === 'drag') {
-        // Simulación de drag con botones (para móvil es más práctico)
-        dragItems = level.items.map((item, idx) => ({ text: item, id: idx, selected: false }));
-        renderDragArea(level);
     }
     
     document.getElementById('feedback').innerHTML = '';
     showScreen('game');
 }
 
-// --- Renderizar área de drag (simulado) ---
-function renderDragArea(level) {
-    const answerArea = document.getElementById('answer-area');
-    let html = `
-        <div class="drag-zone" id="drag-source">
-            ${dragItems.map((item, i) => `<div class="drag-item" data-drag-id="${item.id}">${item.text}</div>`).join('')}
-        </div>
-        <div class="drop-zone" id="drop-zone"></div>
-        <p style="text-align:center; margin:5px 0;">(Toca un elemento y luego toca la zona para colocarlo)</p>
-    `;
-    answerArea.innerHTML = html;
-    
-    // Lógica de selección (simulando drag)
-    document.querySelectorAll('.drag-item').forEach(item => {
-        item.addEventListener('click', function(e) {
-            // Si ya está seleccionado, lo deseleccionamos
-            if (this.classList.contains('selected')) {
-                this.classList.remove('selected');
-                dragSelectedItem = null;
-            } else {
-                document.querySelectorAll('.drag-item').forEach(i => i.classList.remove('selected'));
-                this.classList.add('selected');
-                dragSelectedItem = {
-                    id: parseInt(this.dataset.dragId),
-                    text: this.innerText
-                };
-            }
-        });
-    });
-    
-    // Zona de drop
-    const dropZone = document.getElementById('drop-zone');
-    dropZone.addEventListener('click', function() {
-        if (dragSelectedItem) {
-            // Añadir el elemento al drop zone
-            const newItem = document.createElement('div');
-            newItem.className = 'drag-item';
-            newItem.innerText = dragSelectedItem.text;
-            newItem.dataset.dragId = dragSelectedItem.id;
-            // No se puede quitar fácil, pero para el juego lo marcamos como colocado
-            // Eliminamos el original de la zona source
-            const sourceItem = document.querySelector(`.drag-item[data-drag-id="${dragSelectedItem.id}"]:not(.placed)`);
-            if (sourceItem) {
-                sourceItem.remove();
-                dropZone.appendChild(newItem);
-                // Actualizar orden en dragItems (opcional)
-                // Aquí simplemente lo marcamos como colocado
-                newItem.classList.add('placed');
-                dragSelectedItem = null;
-                document.querySelectorAll('.drag-item').forEach(i => i.classList.remove('selected'));
-            }
-        }
-    });
-}
-
-// --- Obtener respuesta del usuario según tipo ---
+// --- Obtener respuesta del usuario ---
 function getUserAnswer(level) {
     if (level.type === 'input') {
         const val = document.getElementById('answer-input')?.value;
@@ -271,11 +300,6 @@ function getUserAnswer(level) {
     } else if (level.type === 'multiple') {
         const selected = document.querySelector('.option-btn.selected');
         return selected ? parseInt(selected.dataset.optIndex) : null;
-    } else if (level.type === 'drag') {
-        // Leer el orden de los elementos en drop-zone
-        const dropItems = document.querySelectorAll('#drop-zone .drag-item');
-        const order = Array.from(dropItems).map(item => parseInt(item.dataset.dragId));
-        return order;
     }
     return null;
 }
@@ -287,9 +311,6 @@ function isAnswerCorrect(userAns, level) {
         return Math.abs(userAns - level.correct) < 0.01;
     } else if (level.type === 'multiple') {
         return userAns === level.correct;
-    } else if (level.type === 'drag') {
-        if (!userAns || userAns.length !== level.correctOrder.length) return false;
-        return userAns.every((val, idx) => val === level.correctOrder[idx]);
     }
     return false;
 }
@@ -303,37 +324,32 @@ function checkAnswer() {
     const correct = isAnswerCorrect(userAnswer, level);
     
     if (correct) {
-        document.getElementById('feedback').innerHTML = '✅ ¡Correcto! Nivel superado.';
+        document.getElementById('feedback').innerHTML = '✅ ¡Correcto! ' + (level.explanation || 'Bien hecho.');
         playSound('success');
         vibrate([100, 50, 100]);
         
-        // Marcar completado
         if (!levelsCompleted.includes(level.id)) {
             levelsCompleted.push(level.id);
             localStorage.setItem('finanzapp_completed', JSON.stringify(levelsCompleted));
-            // Desbloquear siguiente
             if (level.id === levelsUnlocked && level.id < levels.length) {
                 levelsUnlocked = level.id + 1;
             }
         }
         
-        // Lanzar confeti
         startConfetti();
         
-        // Mostrar modal
         showModal('¡Nivel completado!', () => {
             stopConfetti();
             showScreen('map');
         });
     } else {
-        let hint = level.hint || 'Intenta de nuevo';
-        document.getElementById('feedback').innerHTML = `❌ Incorrecto. ${hint}`;
+        document.getElementById('feedback').innerHTML = `❌ Incorrecto. ${level.hint || 'Intenta de nuevo'}`;
         playSound('error');
         vibrate(300);
     }
 }
 
-// --- Confetti con canvas ---
+// --- Confeti ---
 let confettiCanvas, ctx, confettiAnimation;
 function startConfetti() {
     confettiCanvas = document.getElementById('confetti-canvas');
@@ -357,23 +373,19 @@ function startConfetti() {
     function draw() {
         if (!ctx) return;
         ctx.clearRect(0, 0, confettiCanvas.width, confettiCanvas.height);
-        
         for (let p of particles) {
             ctx.fillStyle = p.color;
             ctx.beginPath();
             ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
             ctx.fill();
-            
             p.y += p.speed;
             if (p.y > confettiCanvas.height) {
                 p.y = -10;
                 p.x = Math.random() * confettiCanvas.width;
             }
         }
-        
         confettiAnimation = requestAnimationFrame(draw);
     }
-    
     draw();
 }
 
@@ -386,7 +398,7 @@ function stopConfetti() {
     }
 }
 
-// --- Modal de mensaje ---
+// --- Modal ---
 function showModal(message, callback) {
     const modal = document.getElementById('modal');
     document.getElementById('modal-message').innerText = message;
@@ -430,10 +442,7 @@ function handleCalcButton(val) {
         else calcValue = '0';
         newNumber = false;
     } else if (val === '+' || val === '-' || val === '*' || val === '/') {
-        if (prevValue !== null && operator) {
-            // calcular parcial
-            compute();
-        }
+        if (prevValue !== null && operator) compute();
         prevValue = parseFloat(calcValue);
         operator = val;
         newNumber = true;
@@ -442,7 +451,6 @@ function handleCalcButton(val) {
         operator = null;
         newNumber = true;
     } else {
-        // números y punto
         if (newNumber) {
             calcValue = val === '.' ? '0.' : val;
             newNumber = false;
@@ -490,9 +498,73 @@ function resetProgress() {
     }
 }
 
+// --- SIMULADOR DE NEGOCIO ---
+let simulatorChart;
+
+function initSimulator() {
+    document.getElementById('sim-price').value = 1000;
+    document.getElementById('sim-var-cost').value = 400;
+    document.getElementById('sim-fixed-cost').value = 70000;
+    document.getElementById('sim-units').value = 500;
+    
+    calculateSimulator();
+    
+    document.getElementById('sim-calculate').addEventListener('click', calculateSimulator);
+}
+
+function calculateSimulator() {
+    const price = parseFloat(document.getElementById('sim-price').value) || 0;
+    const varCost = parseFloat(document.getElementById('sim-var-cost').value) || 0;
+    const fixedCost = parseFloat(document.getElementById('sim-fixed-cost').value) || 0;
+    const units = parseFloat(document.getElementById('sim-units').value) || 0;
+    
+    const revenue = price * units;
+    const totalVar = varCost * units;
+    const profit = revenue - totalVar - fixedCost;
+    const breakeven = fixedCost / (price - varCost);
+    
+    document.getElementById('sim-revenue').innerText = '$' + revenue.toLocaleString();
+    document.getElementById('sim-var-total').innerText = '$' + totalVar.toLocaleString();
+    document.getElementById('sim-fixed-total').innerText = '$' + fixedCost.toLocaleString();
+    document.getElementById('sim-profit').innerText = '$' + profit.toLocaleString();
+    document.getElementById('sim-breakeven').innerText = Math.ceil(breakeven) || 0;
+    
+    updateSimChart(revenue, totalVar, fixedCost, profit);
+}
+
+function updateSimChart(revenue, totalVar, fixedCost, profit) {
+    const ctx = document.getElementById('simChart').getContext('2d');
+    
+    if (simulatorChart) {
+        simulatorChart.destroy();
+    }
+    
+    simulatorChart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: ['Ingresos', 'Costos variables', 'Costos fijos', 'Ganancia neta'],
+            datasets: [{
+                label: 'Monto ($)',
+                data: [revenue, totalVar, fixedCost, profit],
+                backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#2196f3'],
+                borderColor: 'white',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+                y: { beginAtZero: true, ticks: { color: 'white' } },
+                x: { ticks: { color: 'white' } }
+            },
+            plugins: { legend: { labels: { color: 'white' } } }
+        }
+    });
+}
+
 // --- Event listeners ---
 document.addEventListener('DOMContentLoaded', () => {
-    // Botones de menú
     document.getElementById('btn-play').addEventListener('click', () => {
         playSound('click');
         showScreen('map');
@@ -505,8 +577,11 @@ document.addEventListener('DOMContentLoaded', () => {
         playSound('click');
         showScreen('settings');
     });
+    document.getElementById('btn-simulator').addEventListener('click', () => {
+        playSound('click');
+        showScreen('simulator');
+    });
     
-    // Botones de retroceso
     document.getElementById('back-from-map').addEventListener('click', () => {
         playSound('click');
         showScreen('menu');
@@ -523,14 +598,14 @@ document.addEventListener('DOMContentLoaded', () => {
         playSound('click');
         showScreen('menu');
     });
+    document.getElementById('back-from-simulator').addEventListener('click', () => {
+        playSound('click');
+        showScreen('menu');
+    });
     
-    // Botón comprobar respuesta
     document.getElementById('submit-answer').addEventListener('click', checkAnswer);
-    
-    // Siguiente consejo
     document.getElementById('next-tip').addEventListener('click', nextTip);
     
-    // Ajustes
     document.getElementById('sound-toggle').addEventListener('change', (e) => {
         soundEnabled = e.target.checked;
         saveSettings();
@@ -541,7 +616,6 @@ document.addEventListener('DOMContentLoaded', () => {
     });
     document.getElementById('reset-progress').addEventListener('click', resetProgress);
     
-    // Calculadora
     function openCalc() {
         document.getElementById('calc-modal').classList.add('show');
     }
@@ -551,7 +625,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('calc-modal').classList.remove('show');
     });
     
-    // Botones de calculadora
     document.querySelectorAll('.calc-btn-key').forEach(btn => {
         btn.addEventListener('click', (e) => {
             const val = btn.dataset.value;
@@ -562,7 +635,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     });
     
-    // Inicializar
     showScreen('menu');
     renderMap();
     showTip();
