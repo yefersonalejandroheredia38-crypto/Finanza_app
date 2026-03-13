@@ -279,7 +279,93 @@
             </header>
             <div class="achievements-content" id="achievementsList"></div>
         </section>
+<!-- Pantalla de Cursos -->
+<section id="courses-screen" class="screen">
+    <header class="screen-header">
+        <button class="back-btn" id="back-from-courses"><i class="fas fa-arrow-left"></i></button>
+        <h2>Cursos cortos</h2>
+        <div></div>
+    </header>
+    <div class="courses-content" id="coursesList"></div>
+</section>
 
+<!-- Pantalla de Inversor (Simulador avanzado) -->
+<section id="investor-screen" class="screen">
+    <header class="screen-header">
+        <button class="back-btn" id="back-from-investor"><i class="fas fa-arrow-left"></i></button>
+        <h2>Simulador de inversiones</h2>
+        <div></div>
+    </header>
+    <div class="investor-content">
+        <div class="investor-card">
+            <h3>Configura tu inversión</h3>
+            <div class="investor-row">
+                <label>Monto a invertir ($):</label>
+                <input type="number" id="invest-amount" value="100" step="10">
+            </div>
+            <div class="investor-row">
+                <label>Tipo de inversión:</label>
+                <select id="invest-type">
+                    <option value="stock">Acciones (10% anual)</option>
+                    <option value="realestate">Bienes raíces (8% anual)</option>
+                    <option value="crypto">Criptomonedas (25% riesgo)</option>
+                    <option value="business">Tu negocio (variable)</option>
+                </select>
+            </div>
+            <div class="investor-row">
+                <label>Años:</label>
+                <input type="number" id="invest-years" value="5" min="1" max="30">
+            </div>
+            <button class="investor-btn" id="calculate-investment">Calcular</button>
+        </div>
+
+        <div class="investor-results">
+            <div class="result-item">
+                <span>Valor futuro estimado:</span>
+                <span id="invest-future">$0</span>
+            </div>
+            <div class="result-item">
+                <span>Ganancia total:</span>
+                <span id="invest-profit">$0</span>
+            </div>
+            <div class="result-item">
+                <span>Rendimiento anual:</span>
+                <span id="invest-roi">0%</span>
+            </div>
+        </div>
+
+        <div class="investor-chart">
+            <canvas id="investChart" width="400" height="200"></canvas>
+        </div>
+    </div>
+</section>
+
+<!-- Pantalla de Respaldo en la nube -->
+<section id="backup-screen" class="screen">
+    <header class="screen-header">
+        <button class="back-btn" id="back-from-backup"><i class="fas fa-arrow-left"></i></button>
+        <h2>Respaldo en la nube</h2>
+        <div></div>
+    </header>
+    <div class="backup-content">
+        <div class="backup-card">
+            <i class="fas fa-cloud-upload-alt"></i>
+            <h3>Google Drive</h3>
+            <p>Guarda tu progreso en la nube</p>
+            <button class="backup-action-btn" id="backup-to-drive">Respadar ahora</button>
+            <button class="backup-action-btn" id="restore-from-drive">Restaurar</button>
+        </div>
+        <div class="backup-card">
+            <i class="fas fa-download"></i>
+            <h3>Archivo local</h3>
+            <p>Descarga una copia de seguridad</p>
+            <button class="backup-action-btn" id="export-backup">Exportar .json</button>
+            <input type="file" id="import-backup" accept=".json" style="display:none;">
+            <button class="backup-action-btn" id="import-backup-btn">Importar archivo</button>
+        </div>
+        <div class="backup-status" id="backup-status"></div>
+    </div>
+</section>
         <!-- Modal de nivel completado -->
         <div id="modal" class="modal">
             <div class="modal-content">
