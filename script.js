@@ -1,5 +1,5 @@
 // ============================================
-// FINANZAPP - VERSIÓN COMPLETA
+// FINANZAPP - VERSIÓN COMPLETA CORREGIDA
 // 20 niveles, enseñanza, logros, diario, PDF, notificaciones, temas
 // ============================================
 
@@ -32,7 +32,7 @@ const achievementsList = [
     { id: 10, name: 'Modo nocturno', description: 'Activa el tema oscuro', icon: 'fa-moon', unlocked: false }
 ];
 
-// Niveles 1-11 (existentes) + Niveles 12-20 (nuevos)
+// Niveles 1-20 COMPLETOS
 const levels = [
     // NIVEL 1
     { 
@@ -248,7 +248,7 @@ const levels = [
     }
 ];
 
-// Segmentos de enseñanza entre niveles
+// Segmentos de enseñanza entre niveles (8 segmentos)
 const teachingSegments = [
     {
         id: 1,
@@ -674,9 +674,12 @@ function checkAnswer() {
         playSound('success');
         vibrate([100, 50, 100]);
         
+        // Si el nivel no estaba completado, agregarlo y desbloquear el siguiente
         if (!levelsCompleted.includes(level.id)) {
             levelsCompleted.push(level.id);
             localStorage.setItem('finanzapp_completed', JSON.stringify(levelsCompleted));
+            
+            // Desbloquear siguiente nivel SOLO si este nivel es el último desbloqueado
             if (level.id === levelsUnlocked && level.id < levels.length) {
                 levelsUnlocked = level.id + 1;
             }
@@ -688,12 +691,19 @@ function checkAnswer() {
         showModal('¡Nivel completado!', () => {
             stopConfetti();
             
-            // Mostrar enseñanza si hay y no es el último nivel
-            if (currentLevel < levels.length && currentLevel % 2 === 0) {
-                showTeaching(currentLevel);
-            } else {
-                showScreen('map');
+            // Mostrar enseñanza después de niveles pares (2,4,6,8,10,12,14,16,18,20)
+            // Pero no después del nivel 20
+            if (currentLevel % 2 === 0 && currentLevel < 20) {
+                // Calcular qué segmento de enseñanza mostrar (1 para nivel 2, 2 para nivel 4, etc.)
+                const teachingIndex = Math.floor(currentLevel / 2) - 1;
+                if (teachingIndex >= 0 && teachingIndex < teachingSegments.length) {
+                    showTeaching(teachingIndex);
+                    return;
+                }
             }
+            
+            // Si no hay enseñanza, volver al mapa
+            showScreen('map');
         });
     } else {
         document.getElementById('feedback').innerHTML = `❌ Incorrecto. ${level.hint || 'Intenta de nuevo'}`;
@@ -705,8 +715,7 @@ function checkAnswer() {
 // ============================================
 // MOSTRAR ENSEÑANZA
 // ============================================
-function showTeaching(afterLevel) {
-    const teachingIndex = (afterLevel / 2) - 1;
+function showTeaching(teachingIndex) {
     if (teachingIndex < 0 || teachingIndex >= teachingSegments.length) {
         showScreen('map');
         return;
@@ -1194,6 +1203,13 @@ function trackStreak() {
 // INICIALIZACIÓN Y EVENT LISTENERS
 // ============================================
 document.addEventListener('DOMContentLoaded', () => {
+    // Cargar niveles desbloqueados desde el progreso guardado
+    if (levelsCompleted.length > 0) {
+        // El nivel desbloqueado es el siguiente al último completado
+        const maxCompleted = Math.max(...levelsCompleted);
+        levelsUnlocked = Math.min(maxCompleted + 1, levels.length);
+    }
+    
     // Aplicar tema guardado
     applyTheme();
     
