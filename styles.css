@@ -12,6 +12,31 @@ body {
     justify-content: center;
     align-items: center;
     touch-action: manipulation;
+    transition: background 0.3s ease;
+}
+
+body.light-theme {
+    background: linear-gradient(145deg, #f5f7fa 0%, #e4e8ec 100%);
+}
+
+body.light-theme .app-container {
+    background: rgba(255, 255, 255, 0.8);
+    color: #1e2b3c;
+    border-color: rgba(0,0,0,0.1);
+}
+
+body.light-theme .screen {
+    color: #1e2b3c;
+}
+
+body.light-theme .menu-btn {
+    background: rgba(0,0,0,0.05);
+    color: #1e2b3c;
+}
+
+body.light-theme .level-node {
+    background: rgba(0,0,0,0.03);
+    border-color: rgba(0,0,0,0.2);
 }
 
 .app-container {
@@ -25,6 +50,7 @@ body {
     overflow: hidden;
     position: relative;
     border: 1px solid rgba(255,255,255,0.1);
+    transition: background 0.3s ease, color 0.3s ease;
 }
 
 .screen {
@@ -49,7 +75,7 @@ body {
     transform: translateX(0);
 }
 
-/* Transiciones entre pantallas */
+/* Transiciones */
 .screen.exit-left {
     transform: translateX(-100%);
     opacity: 0;
@@ -67,6 +93,10 @@ body {
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+body.light-theme #menu-screen {
+    background: radial-gradient(circle at top left, #e4e8ec, #d0d8e0);
 }
 
 .game-title {
@@ -134,6 +164,11 @@ body {
     border: none;
     box-shadow: 0 10px 20px #357abd80;
 }
+.diary-btn {
+    background: linear-gradient(45deg, #9c27b0, #7b1fa2);
+    border: none;
+    box-shadow: 0 10px 20px #7b1fa280;
+}
 
 .footer-note {
     margin-top: 50px;
@@ -148,7 +183,7 @@ body {
     align-items: center;
     padding: 10px 0 20px;
 }
-.back-btn, .calc-btn {
+.back-btn, .calc-btn, .export-btn {
     background: none;
     border: none;
     color: white;
@@ -162,8 +197,11 @@ body {
     justify-content: center;
     cursor: pointer;
 }
-.back-btn:active, .calc-btn:active {
+.back-btn:active, .calc-btn:active, .export-btn:active {
     background: rgba(255,255,255,0.3);
+}
+.export-btn {
+    color: #f44336;
 }
 .screen-header h2 {
     font-size: 1.6rem;
@@ -174,9 +212,9 @@ body {
     width: 40px;
 }
 
-/* Barra de progreso global */
+/* Barra de progreso y logros */
 .global-progress {
-    margin: 10px 0 20px;
+    margin: 10px 0 10px;
     text-align: center;
 }
 .progress-text {
@@ -196,6 +234,23 @@ body {
     width: 0%;
     border-radius: 30px;
     transition: width 0.3s ease;
+}
+.achievements-bar {
+    background: linear-gradient(45deg, #ffb347, #ff8c00);
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    cursor: pointer;
+}
+.achievements-bar i {
+    font-size: 1.5rem;
+}
+.achievements-bar:active {
+    transform: scale(0.98);
 }
 
 /* Mapa de niveles */
@@ -286,9 +341,9 @@ body {
     padding: 25px;
     border-radius: 30px;
     margin: 15px 0;
-    font-size: 1.5rem;
+    font-size: 1.2rem;
     text-align: center;
-    font-weight: 600;
+    font-weight: 400;
     box-shadow: inset 0 2px 5px rgba(0,0,0,0.5);
 }
 .answer-area {
@@ -362,6 +417,78 @@ body {
     justify-content: center;
 }
 
+/* Pantalla de enseñanza */
+.teaching-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+.teaching-card {
+    background: linear-gradient(145deg, #2a3f5e, #1e2b3c);
+    border-radius: 40px;
+    padding: 25px;
+    border: 3px solid #ffb347;
+    box-shadow: 0 20px 30px black;
+}
+.teaching-card i {
+    font-size: 3rem;
+    color: #ffb347;
+    margin-bottom: 15px;
+}
+.teaching-card h3 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+    color: #ffb347;
+}
+.teaching-card p {
+    font-size: 1.1rem;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+.teaching-quote {
+    font-style: italic;
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 30px;
+    border-left: 5px solid #ffb347;
+    font-size: 1rem;
+}
+.verification-form {
+    background: rgba(0,0,0,0.3);
+    border-radius: 30px;
+    padding: 20px;
+}
+.verification-form h4 {
+    margin-bottom: 15px;
+    color: #ffb347;
+}
+.verification-form p {
+    margin-bottom: 15px;
+}
+.verification-option {
+    margin: 10px 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.verify-btn, .continue-btn {
+    background: #ffb347;
+    color: #0f1a2b;
+    border: none;
+    padding: 15px;
+    border-radius: 50px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+    width: 100%;
+}
+.continue-btn {
+    background: #4caf50;
+    color: white;
+}
+
 /* Consejos */
 .tips-content {
     flex: 1;
@@ -425,6 +552,15 @@ body {
 .setting-item span i {
     margin-right: 15px;
     color: #ffb347;
+}
+.setting-item input[type="text"] {
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    padding: 8px 15px;
+    border-radius: 30px;
+    width: 150px;
+    text-align: center;
 }
 .switch {
     position: relative;
@@ -554,8 +690,127 @@ input:checked + .slider:before {
     height: 220px;
 }
 
-/* Modal de nivel completado */
-.modal {
+/* Diario de negocios */
+.diary-content {
+    flex: 1;
+    overflow-y: auto;
+    padding-bottom: 20px;
+}
+.diary-entry-form {
+    background: rgba(255,255,255,0.1);
+    border-radius: 30px;
+    padding: 20px;
+    margin: 10px 0;
+    border: 2px solid #9c27b0;
+}
+.diary-entry-form h3 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #9c27b0;
+}
+.diary-row {
+    margin: 15px 0;
+}
+.diary-row label {
+    display: block;
+    margin-bottom: 5px;
+}
+.diary-row select, .diary-row input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 40px;
+    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(0,0,0,0.3);
+    color: white;
+    font-size: 1.2rem;
+}
+.diary-btn {
+    background: #9c27b0;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 18px;
+    border-radius: 60px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    margin-top: 10px;
+    cursor: pointer;
+}
+.diary-summary {
+    background: rgba(0,0,0,0.4);
+    border-radius: 30px;
+    padding: 20px;
+    margin: 20px 0;
+}
+.summary-item {
+    display: flex;
+    justify-content: space-between;
+    margin: 10px 0;
+    font-size: 1.1rem;
+    border-bottom: 1px solid rgba(255,255,255,0.2);
+    padding-bottom: 5px;
+}
+.diary-list {
+    background: rgba(0,0,0,0.2);
+    border-radius: 30px;
+    padding: 15px;
+}
+.diary-list h3 {
+    margin-bottom: 15px;
+    color: #9c27b0;
+}
+.diary-entry-item {
+    display: flex;
+    justify-content: space-between;
+    background: rgba(255,255,255,0.05);
+    padding: 12px;
+    border-radius: 30px;
+    margin: 8px 0;
+    border-left: 5px solid;
+}
+.diary-entry-item.income {
+    border-left-color: #4caf50;
+}
+.diary-entry-item.expense {
+    border-left-color: #f44336;
+}
+
+/* Logros */
+.achievements-content {
+    flex: 1;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    padding: 10px 0;
+}
+.achievement-card {
+    background: rgba(255,255,255,0.05);
+    border-radius: 30px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    border: 2px solid rgba(255,255,255,0.2);
+}
+.achievement-card.unlocked {
+    border-color: #ffb347;
+    background: rgba(255,180,71,0.1);
+}
+.achievement-card i {
+    font-size: 2.5rem;
+    color: #ffb347;
+}
+.achievement-info h3 {
+    font-size: 1.2rem;
+}
+.achievement-info p {
+    font-size: 0.9rem;
+    opacity: 0.7;
+}
+
+/* Modales */
+.modal, .achievement-modal {
     display: none;
     position: absolute;
     top: 0; left: 0; width: 100%; height: 100%;
@@ -564,10 +819,10 @@ input:checked + .slider:before {
     justify-content: center;
     z-index: 100;
 }
-.modal.show {
+.modal.show, .achievement-modal.show {
     display: flex;
 }
-.modal-content {
+.modal-content, .achievement-modal-content {
     background: #1e2b3c;
     padding: 40px;
     border-radius: 50px;
@@ -575,6 +830,14 @@ input:checked + .slider:before {
     max-width: 300px;
     border: 3px solid #ffb347;
     animation: pop 0.3s ease;
+}
+.achievement-modal-content {
+    background: linear-gradient(145deg, #ffb347, #ff8c00);
+    color: #0f1a2b;
+}
+.achievement-modal-content i {
+    font-size: 4rem;
+    margin-bottom: 20px;
 }
 @keyframes pop {
     0% { transform: scale(0.5); opacity: 0; }
