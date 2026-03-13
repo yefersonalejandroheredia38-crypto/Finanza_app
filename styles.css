@@ -940,3 +940,18 @@ input:checked + .slider:before {
     background: #4caf50;
     grid-column: span 2;
 }
+.course-btn {
+    background: linear-gradient(45deg, #9c27b0, #6a1b9a);
+    border: none;
+    box-shadow: 0 10px 20px #6a1b9a80;
+}
+.investor-btn {
+    background: linear-gradient(45deg, #2e7d32, #1b5e20);
+    border: none;
+    box-shadow: 0 10px 20px #1b5e2080;
+}
+.backup-btn {
+    background: linear-gradient(45deg, #0288d1, #01579b);
+    border: none;
+    box-shadow: 0 10px 20px #01579b80;
+}
