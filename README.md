@@ -28,7 +28,7 @@
 |----------------|------------------|------------------|
 | ![Menú](https://via.placeholder.com/150?text=Menu) | ![Mapa](https://via.placeholder.com/150?text=Mapa) | ![Juego](https://via.placeholder.com/150?text=Juego) |
 
-*(Reemplaza los enlaces con capturas reales de tu proyecto)*
+*(Reemplaza los enlaces con capturas reales)*
 
 ---
 
